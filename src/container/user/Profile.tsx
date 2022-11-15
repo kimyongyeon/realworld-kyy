@@ -1,7 +1,9 @@
+import { time } from 'console';
 import { useEffect, useState } from 'react';
 import axiosService from '../../common/AxiosService';
 import BE_API from '../../common/beApi';
 import commonLog from '../../common/LoggingService';
+import { Article } from '../article/domain/Article';
 import { ArticlePreview } from './component/profile/ArticlePreview';
 import { ArticlesToggle } from './component/profile/ArticlesToggle';
 import { UserInfoCard } from './component/profile/UserInfoCard';
@@ -17,6 +19,8 @@ export const Profile = () => {
     token: '',
     bio: '',
   });
+
+  const [articles, setArticles] = useState([]);
 
   const previewList = [
     {
@@ -55,7 +59,7 @@ export const Profile = () => {
   ];
 
   // 이건 컴포넌트로 왜 안만들어 지는가?
-  const getPreviewList = (list: typeof previewList) => {
+  const getPreviewList = (list: Article[]) => {
     return (
       <>
         {list.map((p) => (
@@ -75,6 +79,16 @@ export const Profile = () => {
     axiosService
       .get(BE_API.GET_PROFILE(user.getUserInfo().username || ''))
       .then((response) => commonLog.info(response));
+
+    axiosService.get(BE_API.GET_ARTICLES).then((res: any) => {
+      const list = res.data.articles as [];
+      setArticles([...list]);
+      let i = 1;
+      list.map((item: any) => {
+        item.seq = i++;
+        return item;
+      });
+    });
   }, []);
   return (
     <>
@@ -84,7 +98,7 @@ export const Profile = () => {
           <div className="row">
             <div className="col-xs-12 col-md-10 offset-md-1">
               <ArticlesToggle />
-              {getPreviewList(previewList)}
+              {getPreviewList(articles)}
             </div>
           </div>
         </div>

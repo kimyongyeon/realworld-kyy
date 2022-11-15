@@ -71,7 +71,7 @@ const Header = () => {
       return (
         <>
           <Nav.Link as={Link} to="/register">
-            Sign up
+            회원가입
           </Nav.Link>
         </>
       );
@@ -104,8 +104,8 @@ const Header = () => {
               <Nav.Link as={Link} to="/">
                 홈으로
               </Nav.Link>
-              <Nav.Link as={Link} to="/article">
-                게시판
+              <Nav.Link as={Link} to="/article/detail">
+                게시판글쓰기
               </Nav.Link>
               {/* {SignUp()} */}
               {Setting()}

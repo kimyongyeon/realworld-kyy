@@ -8,12 +8,15 @@ import progressShare from '../../common/ProgressShare';
 
 export const Settings = () => {
   const user = new User();
-  const userInfo = useStateProxy(user.getUserInfo());
-  const [progress, setProgress] = useState(progressShare.getValue());
+  const userInfo = useStateProxy(user.initUserInfo());
+  const [progress, setProgress] = useState(0);
+  const [progressYn, setProgressYn] = useState(false);
 
   useEffect(() => {
     axiosService.get(BE_API.GET_CURRENT_USER).then((res: any) => {
       user.updateUserInfo(res.data);
+      userInfo.image = user.getUserInfo().image;
+      userInfo.username = user.getUserInfo().username;
       userInfo.bio = user.getUserInfo().bio;
     });
   }, []);
@@ -21,21 +24,25 @@ export const Settings = () => {
   const update = (e: any) => {
     e.preventDefault();
     const updateForm = user.updateSignupForm(userInfo);
+    setProgressYn(true);
     axiosService
       .put(BE_API.PUT_UPDATE_USER, updateForm)
       .then((res) => {
+        progressShare.setValue(0);
         setProgress(0);
+        setProgressYn(false);
       })
       .catch((e) => {
+        progressShare.setValue(0);
         setProgress(0);
+        setProgressYn(false);
         alert(e);
       });
-    setProgress(progressShare.getValue());
   };
   return (
     <>
       <div className="settings-page">
-        <ProgressBar now={progress} label={`${progress}%`} />
+        {progressYn && <ProgressBar now={progress} label={`${progress}%`} />}
         <div className="container page">
           <div className="row">
             <div className="col-md-6 offset-md-3 col-xs-12">

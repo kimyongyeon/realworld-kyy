@@ -52,6 +52,16 @@ export default class User {
     }
   }
 
+  initUserInfo(): UserInfo {
+    return {
+      email: '',
+      username: '',
+      bio: '',
+      image: '',
+      token: '',
+    };
+  }
+
   isLogin() {
     const is = sessionStorage.getItem('login');
     return is !== null;

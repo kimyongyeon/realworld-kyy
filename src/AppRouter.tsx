@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Footer } from './component/Footer';
 import Header from './component/Header';
-import { Detail } from './container/article/Detail';
+import { Write } from './container/article/Write';
 import { List } from './container/article/List';
 import Home from './container/main/Home';
 import { Login } from './container/user/Login';
@@ -21,7 +21,7 @@ const AppRouter = () => {
           <Route path="/register/*" element={<Register />} />
           <Route path="/settings/*" element={<Settings />} />
           <Route path="/profile/*" element={<Profile />} />
-          <Route path="/article/detail" element={<Detail />} />
+          <Route path="/article/detail" element={<Write />} />
           <Route path="/" element={<Navigate replace to="/main" />} />
         </Routes>
         <Footer />
