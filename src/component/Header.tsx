@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import { Link } from 'react-router-dom';
 import commonLog from '../common/LoggingService';
 import User, { UserInfo } from '../container/user/domain/User';
 
 const Header = () => {
-  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const user = new User();
@@ -13,28 +16,30 @@ const Header = () => {
   }, []);
 
   const logout = () => {
-    const user = new User();
-    user.logout();
-    commonLog.info('logout clear', user.isLogin());
-    navigate('/login', { replace: true });
+    const r = confirm('정말로 로그아웃 하시겠습니까?');
+    if (r) {
+      const user = new User();
+      user.logout();
+      commonLog.info('logout clear', user.isLogin());
+    }
   };
 
   const Login = () => {
     if (isLoggedIn) {
       return (
-        <li className="nav-item">
-          <a className="nav-link" href="#" onClick={logout}>
-            logout
-          </a>
-        </li>
+        <>
+          <Nav.Link as={Link} to="/login" onClick={logout}>
+            로그아웃
+          </Nav.Link>
+        </>
       );
     } else {
       return (
-        <li className="nav-item">
-          <a className="nav-link" href="/login">
-            login
-          </a>
-        </li>
+        <>
+          <Nav.Link as={Link} to="/login">
+            로그인
+          </Nav.Link>
+        </>
       );
     }
   };
@@ -48,11 +53,11 @@ const Header = () => {
 
     if (isLoggedIn) {
       return (
-        <li className="nav-item">
-          <a className="nav-link" href="/profile">
+        <>
+          <Nav.Link as={Link} to="/profile">
             {userInfo?.username}
-          </a>
-        </li>
+          </Nav.Link>
+        </>
       );
     } else {
       return '';
@@ -64,11 +69,11 @@ const Header = () => {
       return '';
     } else {
       return (
-        <li className="nav-item">
-          <a className="nav-link" href="/register">
+        <>
+          <Nav.Link as={Link} to="/register">
             Sign up
-          </a>
-        </li>
+          </Nav.Link>
+        </>
       );
     }
   };
@@ -76,47 +81,44 @@ const Header = () => {
   const Setting = () => {
     if (isLoggedIn) {
       return (
-        <li className="nav-item">
-          <a className="nav-link" href="/settings">
-            <i className="ion-gear-a"></i>&nbsp;Settings
-          </a>
-        </li>
+        <>
+          <Nav.Link as={Link} to="/settings">
+            프로필수정
+          </Nav.Link>
+        </>
       );
     } else {
       return '';
     }
   };
 
-  //image를 import하는 대신 require(path)를 통해 변수에 저장해준다.
+  const TopMenu = () => {
+    return (
+      <>
+        <Navbar bg="light" variant="light">
+          <Container>
+            <Navbar.Brand as={Link} to="/">
+              콘두잇
+            </Navbar.Brand>
+            <Nav className="me-auto">
+              <Nav.Link as={Link} to="/">
+                홈으로
+              </Nav.Link>
+              <Nav.Link as={Link} to="/article">
+                게시판
+              </Nav.Link>
+              {/* {SignUp()} */}
+              {Setting()}
+              {UserInfo()}
+              {Login()}
+            </Nav>
+          </Container>
+        </Navbar>
+      </>
+    );
+  };
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
-  return (
-    <nav className="navbar navbar-light">
-      <div className="container">
-        <a className="navbar-brand" href="/">
-          conduit
-        </a>
-        <ul className="nav navbar-nav pull-xs-right">
-          <li className="nav-item">
-            <a className="nav-link active" href="/">
-              Home
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="/article">
-              <i className="ion-compose"></i>&nbsp;New Article
-            </a>
-          </li>
-
-          {Login()}
-          {/* {SignUp()} */}
-          {Setting()}
-          {UserInfo()}
-        </ul>
-      </div>
-    </nav>
-  );
+  return <>{TopMenu()}</>;
 };
 
 export default Header;

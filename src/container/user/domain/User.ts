@@ -57,6 +57,11 @@ export default class User {
     return is !== null;
   }
 
+  updateUserInfo(result: UserResponse) {
+    commonLog.info(JSON.stringify(result.user));
+    sessionStorage.setItem('login', JSON.stringify(result.user));
+  }
+
   setLoginInfo(result: UserResponse) {
     commonLog.info(JSON.stringify(result.user));
     // {"user":{"email":"test1818@naver.com","username":"테스트계정","bio":null,"image":"https://api.realworld.io/images/smiley-cyrus.jpeg","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxODE4QG5hdmVyLmNvbSIsInVzZXJuYW1lIjoi7YWM7Iqk7Yq46rOE7KCVIiwiaWF0IjoxNjY4MjYxMjQyLCJleHAiOjE2NzM0NDUyNDJ9.S3dJbwWiw8tUsvN0wvYqmmsG5KtNn2Fs5dAYiRv4E8o"}}
@@ -78,6 +83,18 @@ export default class User {
         email: this.email,
         password: this.password,
         username: this.username,
+      },
+    };
+  }
+
+  updateSignupForm(userInfo: UserInfo) {
+    return {
+      user: {
+        // email: userInfo.email,
+        // password: userInfo.password,
+        username: userInfo.username,
+        image: userInfo.image,
+        bio: userInfo.bio,
       },
     };
   }

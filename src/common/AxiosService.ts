@@ -1,11 +1,33 @@
 import axios from 'axios';
 import User from '../container/user/domain/User';
 import commonLog from './LoggingService';
+import progressShare from './ProgressShare';
 
 class AxiosService {
   private static CancelToken = axios.CancelToken;
   private static source = this.CancelToken.source();
   private accessToken: string;
+
+  private progress = 0;
+  private timerId: any = null;
+
+  setProgress(value: number) {
+    this.progress = value;
+    progressShare.setValue(value);
+  }
+
+  public getProgress() {
+    return this.progress;
+  }
+
+  timer() {
+    if (this.progress < 98) {
+      const diff = 100 - this.progress;
+      const inc = diff / (10 + this.progress * (1 + this.progress / 100)); // 증가값
+      this.setProgress(this.progress + inc);
+    }
+    this.timerId = setTimeout(this.timer, 50); // 50 ms 단위로 timer 재귀호출
+  }
 
   constructor() {
     const user = new User();
@@ -25,12 +47,14 @@ class AxiosService {
 
     // 요청 인터셉터 추가
     axios.interceptors.request.use(
-      function (config) {
+      (config) => {
         // 요청을 보내기 전에 수행할 일
         // commonLog.info(`request interceptor config : ${JSON.stringify(config)}`);
+        this.setProgress(0);
+        this.timer();
         return config;
       },
-      function (error) {
+      (error) => {
         // 오류 요청을 보내기전 수행할 일
         return Promise.reject(error);
       }
@@ -38,12 +62,17 @@ class AxiosService {
 
     // 응답 인터셉터 추가
     axios.interceptors.response.use(
-      function (response) {
+      (response) => {
+        if (this.timerId) {
+          clearTimeout(this.timerId); // HTTP 응답시 timer 해제
+          this.timerId = null;
+        }
+        this.setProgress(100);
         // 응답 데이터를 가공
         commonLog.info(`response interceptor config : ${JSON.stringify(response)}`);
         return response;
       },
-      function (error) {
+      (error) => {
         // 오류 응답을 처리
         return Promise.reject(error);
       }
@@ -100,19 +129,66 @@ class AxiosService {
   }
 
   post(url: string, data: any) {
-    return axios.post(url, data, {
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
-      },
+    return new Promise((resolve, reject) => {
+      axios
+        .post(url, data, {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        })
+        .then(function (response) {
+          commonLog.info(response);
+          resolve(response);
+        })
+        .catch(function (error) {
+          commonLog.info(error);
+          reject(error.message);
+          // 요청 취소 (message 매개 변수는 선택 사항)
+          // this.source.cancel('Operation canceled by the user.');
+        });
     });
-    // .then(function (response) {
-    //   commonLog.info(response);
-    // })
-    // .catch(function (error) {
-    //   commonLog.info(error);
-    //   // 요청 취소 (message 매개 변수는 선택 사항)
-    //   // this.source.cancel('Operation canceled by the user.');
-    // });
+  }
+
+  put(url: string, data: any) {
+    return new Promise((resolve, reject) => {
+      axios
+        .put(url, data, {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        })
+        .then(function (response) {
+          commonLog.info(response);
+          resolve(response);
+        })
+        .catch(function (error) {
+          commonLog.info(error);
+          reject(error.message);
+          // 요청 취소 (message 매개 변수는 선택 사항)
+          // this.source.cancel('Operation canceled by the user.');
+        });
+    });
+  }
+
+  delete(url: string, data: any) {
+    return new Promise((resolve, reject) => {
+      axios
+        .delete(url, {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        })
+        .then(function (response) {
+          commonLog.info(response);
+          resolve(response);
+        })
+        .catch(function (error) {
+          commonLog.info(error);
+          reject(error.message);
+          // 요청 취소 (message 매개 변수는 선택 사항)
+          // this.source.cancel('Operation canceled by the user.');
+        });
+    });
   }
 
   all(urls: []) {

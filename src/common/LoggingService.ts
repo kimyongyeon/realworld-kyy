@@ -10,7 +10,7 @@ class LoggingService {
   }
   public info(...args: any) {
     if (this.level === 'local') {
-      console.log(`info =======>  ${JSON.stringify(args)}`);
+      // console.log(`info =======>  ${JSON.stringify(args)}`);
     }
   }
   public error(...args: any) {

@@ -26,7 +26,7 @@ export const Login = () => {
     // test1818@naver.com  / 1111
     axiosService
       .post(BE_API.POST_LOGIN, user.createloginForm())
-      .then((response) => {
+      .then((response: any) => {
         user.setLoginInfo(response.data);
         setLoginFail(false);
         // navigate('/', { replace: true });
