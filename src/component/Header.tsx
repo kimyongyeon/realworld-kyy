@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import commonLog from '../common/LoggingService';
 import User, { UserInfo } from '../container/user/domain/User';
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const user = new User();
     setIsLoggedIn(user.isLogin());
@@ -20,7 +20,9 @@ const Header = () => {
     if (r) {
       const user = new User();
       user.logout();
+      setIsLoggedIn(false);
       commonLog.info('logout clear', user.isLogin());
+      navigate('/', { replace: true });
     }
   };
 
@@ -92,6 +94,16 @@ const Header = () => {
     }
   };
 
+  const Article = () => {
+    if (isLoggedIn) {
+      return (
+        <Nav.Link as={Link} to="/article/detail">
+          게시판글쓰기
+        </Nav.Link>
+      );
+    }
+  };
+
   const TopMenu = () => {
     return (
       <>
@@ -104,9 +116,7 @@ const Header = () => {
               <Nav.Link as={Link} to="/">
                 홈으로
               </Nav.Link>
-              <Nav.Link as={Link} to="/article/detail">
-                게시판글쓰기
-              </Nav.Link>
+              {Article()}
               {/* {SignUp()} */}
               {Setting()}
               {UserInfo()}

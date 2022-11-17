@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export const ArticlesToggle = () => {
+export const ArticlesToggle = (props: any) => {
   const [active, setActive] = useState(false);
   const [favolActive, setFavolActive] = useState(false);
 
@@ -25,6 +25,7 @@ export const ArticlesToggle = () => {
               className={isActive()}
               href="#"
               onClick={(e) => {
+                props.setToggle('article');
                 e.preventDefault();
                 setFavolActive(false);
                 setActive(true);
@@ -38,6 +39,7 @@ export const ArticlesToggle = () => {
               className={isFavolActive()}
               href="#"
               onClick={(e) => {
+                props.setToggle('favol');
                 e.preventDefault();
                 setFavolActive(true);
                 setActive(false);

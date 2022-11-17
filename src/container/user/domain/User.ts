@@ -25,12 +25,17 @@ export default class User {
   }
 
   logout() {
-    sessionStorage.removeItem('login');
+    // 비동기 처리 안하면 삭제 안됨.
+    setTimeout(() => {
+      sessionStorage.clear();
+      sessionStorage.removeItem('login');
+    }, 10);
   }
 
   getToken() {
     const user = sessionStorage.getItem('login') || '';
-    if (user !== '') {
+    console.log(user);
+    if (user) {
       return JSON.parse(user).token;
     } else {
       return '';
@@ -39,7 +44,7 @@ export default class User {
 
   getUserInfo(): UserInfo {
     const user = sessionStorage.getItem('login') || '';
-    if (user !== '') {
+    if (user) {
       return JSON.parse(user);
     } else {
       return {

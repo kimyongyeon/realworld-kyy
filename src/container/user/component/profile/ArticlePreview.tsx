@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axiosService from '../../../../common/AxiosService';
+import BE_API from '../../../../common/beApi';
+import { detailDate } from '../../../../common/helper';
+import { Article } from '../../../article/domain/Article';
 
 export interface IArticlePreviewProps {
+  slug: string;
   img: string;
   createdAt: string;
   authorName: string;
@@ -15,6 +21,10 @@ export interface IArticlePreviewProps {
 
   favorited: boolean;
 
+  favoritedBy: [];
+
+  articleList: Article[];
+
   author: {
     username: string;
     bio: string;
@@ -23,27 +33,18 @@ export interface IArticlePreviewProps {
   };
 }
 
-function detailDate(value: string) {
-  const today = new Date();
-  const timeValue = new Date(value);
-  const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
-  if (betweenTime < 1) return '방금전';
-  if (betweenTime < 60) {
-    return `${betweenTime}분전`;
-  }
-  const betweenTimeHour = Math.floor(betweenTime / 60);
-  if (betweenTimeHour < 24) {
-    return `${betweenTimeHour}시간전`;
-  }
-  const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-  if (betweenTimeDay < 365) {
-    return `${betweenTimeDay}일전`;
-  }
-  return `${Math.floor(betweenTimeDay / 365)}년전`;
-}
-
 export const ArticlePreview = (props: Partial<IArticlePreviewProps>) => {
   const [isTags, setIsTags] = useState(false);
+  const navigate = useNavigate();
+  const [count, setCount] = useState(0);
+  const [toggle, setToggle] = useState(props.favorited);
+
+  useEffect(() => {
+    // const total = props.favoritesCount || 0;
+    // setCount(total);
+    // setPrevCount(total);
+    console.log(props);
+  });
 
   const TagList = () => {
     if (isTags) {
@@ -59,16 +60,34 @@ export const ArticlePreview = (props: Partial<IArticlePreviewProps>) => {
   };
 
   const favolit = (props: Partial<IArticlePreviewProps>) => {
+    const total = (props.favoritesCount || 0) + count;
     return (
       <>
-        <i className="ion-heart">{props.favoritesCount}</i>
+        <i className="ion-heart">{total}</i>
       </>
     );
   };
 
   const favolToggle = (e: any) => {
     e.preventDefault();
-    alert(1);
+    const slug: string = props.slug || '';
+    if (toggle) {
+      // 싫어요...
+      axiosService.delete(BE_API.DEL_FAVORITE_ARTICLE(slug), {}).then((res) => {
+        console.log('싫어요 성공', res);
+        // navigate(0);
+        setToggle((t) => false);
+        setCount((c) => c - 1);
+      });
+    } else {
+      // http://man.hubwiz.com/docset/IonIcons.docset/Contents/Resources/Documents/icons/default/
+      axiosService.post(BE_API.POST_FAVORITE_ARTICLE(slug), {}).then((res) => {
+        console.log('좋아요 성공', res);
+        // navigate(0);
+        setToggle((t) => true);
+        setCount((c) => c + 1);
+      });
+    }
   };
   return (
     <>
@@ -87,7 +106,7 @@ export const ArticlePreview = (props: Partial<IArticlePreviewProps>) => {
             {favolit(props)}
           </button>
         </div>
-        <a href={props.previewLink} className="preview-link">
+        <a href={`/api/articles/${props.slug}`} className="preview-link">
           <h1>{props.title}</h1>
           <p>{props.summary}</p>
           <span>Read more...</span>
