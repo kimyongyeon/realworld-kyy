@@ -19,14 +19,7 @@ const AppRouter = () => {
           <Route path="/main/*" element={<Home />} />
           <Route path="/article/*" element={<List />} />
           <Route path="/login/*" element={<Login />} />
-          <Route
-            path="/register/*"
-            element={
-              <RequireAuth>
-                <Register />
-              </RequireAuth>
-            }
-          />
+          <Route path="/register/*" element={<Register />} />
           <Route
             path="/settings/*"
             element={

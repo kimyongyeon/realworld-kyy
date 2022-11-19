@@ -50,17 +50,15 @@ export const Profile = () => {
 
   const requestArticle = () => {
     // https://api.realworld.io/api/articles?favorited=%EB%B3%80%EA%B2%BD%EA%B5%BF%EB%A7%A8&limit=5&offset=0
-    axiosService
-      .get(BE_API.GET_ARTICLES + `?author=${userInfo.username}&limit=5&offset=0`)
-      .then((res: any) => {
-        const result = respListToViewList(res);
-        setArticles([...result]);
-      });
+    axiosService.get(BE_API.GET_ARTICLES + `?author=변경굿맨&limit=5&offset=0`).then((res: any) => {
+      const result = respListToViewList(res);
+      setArticles([...result]);
+    });
   };
 
   const requestFeed = () => {
     axiosService
-      .get(BE_API.GET_ARTICLES + `?favorited=${userInfo.username}&limit=5&offset=0`)
+      .get(BE_API.GET_ARTICLES + `?favorited=변경굿맨&limit=5&offset=0`)
       .then((res: any) => {
         const result = respListToViewList(res);
         setFavolist([...result]);
@@ -72,7 +70,7 @@ export const Profile = () => {
     return (
       <>
         {list.map((p) => (
-          <ArticlePreview key={p.seq} {...p} articleList={list || []} />
+          <ArticlePreview key={p.seq} {...p} />
         ))}
       </>
     );

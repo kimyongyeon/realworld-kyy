@@ -36,7 +36,7 @@ export interface IArticlePreviewProps {
 export const ArticlePreview = (props: Partial<IArticlePreviewProps>) => {
   const [isTags, setIsTags] = useState(false);
   const navigate = useNavigate();
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(props.favoritesCount || 0);
   const [toggle, setToggle] = useState(props.favorited);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const ArticlePreview = (props: Partial<IArticlePreviewProps>) => {
     // setCount(total);
     // setPrevCount(total);
     console.log(props);
-  });
+  }, [count]);
 
   const TagList = () => {
     if (isTags) {

@@ -17,13 +17,14 @@ export const Write = () => {
     const form = article.createForm(articleInfo);
 
     setProgressYn(true);
+
     axiosService
       .post(BE_API.POST_ARTICLES, form)
       .then((res) => {
         console.log(res);
-        progressShare.setValue(0);
-        setProgress(0);
-        setProgressYn(false);
+        // progressShare.setValue(0);
+        setProgress(progressShare.getValue());
+        // setProgressYn(false);
 
         // todo: 화면 목록으로 이동....
       })
@@ -38,7 +39,7 @@ export const Write = () => {
   return (
     <>
       <div className="editor-page">
-        {progressYn && <ProgressBar now={progress} label={`${progress}%`} />}
+        {<ProgressBar now={progress} label={`${progress}%`} />}
         <div className="container page">
           <div className="row">
             <div className="col-md-10 offset-md-1 col-xs-12">

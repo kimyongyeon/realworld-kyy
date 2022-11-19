@@ -20,6 +20,7 @@ class AxiosService {
     return this.progress;
   }
 
+  // SSE, Wesocket
   timer() {
     if (this.progress < 98) {
       const diff = 100 - this.progress;
