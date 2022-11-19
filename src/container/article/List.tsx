@@ -3,7 +3,7 @@ import RequireAuth from '../../component/RequireAuth';
 
 const List = () => {
   return (
-    <>
+    <RequireAuth>
       <div className="article-page">
         <div className="banner">
           <div className="container">
@@ -124,11 +124,7 @@ const List = () => {
           </div>
         </div>
       </div>
-    </>
+    </RequireAuth>
   );
 };
-export default () => (
-  <RequireAuth>
-    <List />
-  </RequireAuth>
-);
+export default List;
