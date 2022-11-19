@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Footer } from './component/Footer';
 import Header from './component/Header';
 import RequireAuth from './component/RequireAuth';
-import { List } from './container/article/List';
+import List from './container/article/List';
 import { Write } from './container/article/Write';
 import Home from './container/main/Home';
 import { Login } from './container/user/Login';
@@ -17,14 +17,7 @@ const AppRouter = () => {
         <Header />
         <Routes>
           <Route path="/main/*" element={<Home />} />
-          <Route
-            path="/article/*"
-            element={
-              <RequireAuth>
-                <List />
-              </RequireAuth>
-            }
-          />
+          <Route path="/article/*" element={<List />} />
           <Route path="/login/*" element={<Login />} />
           <Route
             path="/register/*"

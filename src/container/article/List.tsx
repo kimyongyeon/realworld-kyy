@@ -1,6 +1,7 @@
 import React from 'react';
+import RequireAuth from '../../component/RequireAuth';
 
-export const List = () => {
+const List = () => {
   return (
     <>
       <div className="article-page">
@@ -126,3 +127,8 @@ export const List = () => {
     </>
   );
 };
+export default () => (
+  <RequireAuth>
+    <List />
+  </RequireAuth>
+);
